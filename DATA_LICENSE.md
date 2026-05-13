@@ -12,6 +12,10 @@ are provided solely for **non-commercial academic reproducibility** of the assoc
 manuscript. They are not intended to replace, relicense, or redistribute the original
 upstream benchmark.
 
+The derived case is intended for methodological validation of the associated manuscript
+and should not be interpreted as a real refinery operating case or a direct estimate of
+industrial commercial benefits.
+
 If you reuse these derived files, please:
 1. Cite the associated manuscript.
 2. Cite the original upstream benchmark (see `NOTICE.md`).

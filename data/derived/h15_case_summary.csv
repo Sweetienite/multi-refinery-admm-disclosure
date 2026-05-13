@@ -1,7 +1,7 @@
 parameter,value,unit,note
-scenario_id,H15_strong_complementarity_counterfactual_v1,,
+scenario_id,H15_dual_refinery_coordination_v1,,
 source_benchmark,case3,,"refinery-planning-benchmark/case3"
-scenario_type,strong_complementarity_counterfactual,,"not real industrial data; used for method validation"
+scenario_type,public_benchmark_derived_coordination_case,,"not real industrial data; used for method validation"
 standalone_A_profit,22729950.00,CNY,Refinery A independent optimisation
 standalone_B_profit,33551820.00,CNY,Refinery B independent optimisation
 standalone_total_profit,56281770.00,CNY,System baseline

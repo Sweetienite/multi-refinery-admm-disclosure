@@ -1,5 +1,7 @@
 # Multi-refinery ADMM Disclosure
 
+![Reproduce](https://github.com/Sweetienite/multi-refinery-admm-disclosure/actions/workflows/reproduce.yml/badge.svg)
+
 Reproducibility package for the manuscript:
 
 > **ADMM-based coordinated production planning and commercial information disclosure control for multi-refinery systems**
@@ -53,8 +55,10 @@ See `data/README.md` for details on data provenance.
 git clone https://github.com/Sweetienite/multi-refinery-admm-disclosure.git
 cd multi-refinery-admm-disclosure
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
+# Windows PowerShell:
+.venv\Scripts\Activate.ps1
+# Windows cmd:
+# .venv\Scripts\activate.bat
 # Linux/macOS:
 # source .venv/bin/activate
 pip install -r requirements.txt
@@ -84,8 +88,8 @@ python scripts/make_figures.py
 | System coordination value | 4,119,930.00 CNY |
 | ADMM relative total-profit error | 0.187% |
 | ADMM coordination-value gap | 2.75% |
-| Adaptive-threshold ladder exposure reduction | 69.35% |
-| Stream-bucketing exposure reduction | 70.65% |
+| Adaptive thresholding exposure reduction | 69.35% |
+| Flow interval aggregation exposure reduction | 70.65% |
 
 ## License
 

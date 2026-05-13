@@ -1,8 +1,9 @@
 # main_case.yaml — Case parameters for the H15 paper case
 #
-# This is a "strong-complementarity counterfactual" case derived from
-# publicly available refinery-petrochemical production planning benchmark
-# parameters (see data/README.md and NOTICE.md for provenance).
+# This case is derived from publicly available refinery-petrochemical
+# production planning benchmark parameters (see data/README.md and NOTICE.md
+# for provenance). It is designed for methodological validation of the
+# ADMM-based coordination and disclosure-control framework.
 #
 # Model description:
 #   Refinery A holds 5 production streams (s147, s158, s53, s61, s545).
@@ -19,7 +20,7 @@
 # The capacity-sharing ADMM decomposes this joint problem into two plant
 # sub-problems connected by the shared system capacity constraint.
 
-scenario_id: H15_strong_complementarity_counterfactual_v1
+scenario_id: H15_dual_refinery_coordination_v1
 
 # ── Refinery A parameters ────────────────────────────────────────────────────
 refineries:

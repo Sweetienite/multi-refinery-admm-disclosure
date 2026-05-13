@@ -2,9 +2,9 @@
 
 ## Case scope
 
-The numerical results are derived from a single **strong-complementarity
-counterfactual** case constructed from publicly available benchmark parameters.
-They are **not** generalisable to:
+The numerical results are derived from a single **public-benchmark-derived
+dual-refinery coordination case** constructed from publicly available benchmark
+parameters.  They are **not** generalisable to:
 
 - Arbitrary refinery pairs with different stream structures
 - Real industrial multi-refinery systems

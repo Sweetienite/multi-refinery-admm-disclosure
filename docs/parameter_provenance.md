@@ -26,7 +26,7 @@ Two subsets of Case 3 streams are selected to form the two-refinery case:
 
 ## Model construction
 
-The stream selection creates a "strong-complementarity counterfactual" scenario:
+The stream selection creates a public-benchmark-derived dual-refinery coordination case:
 - Plant A has high-price but capacity-limited streams (s147 is the highest-value stream).
 - Plant B has lower prices but substantially more capacity (s455: 2.0 kt, s391: 1.84 kt).
 - Total system capacity: 8.15 kt = sum of all fv_max values.
@@ -36,6 +36,9 @@ and the joint optimiser reallocates capacity to the highest-value streams.
 
 ## Design principle
 
-The case is designed to study the methodology (ADMM + disclosure control) under
-clearly positive complementarity, not to estimate the profit of any real refinery.
-Results are not generalisable to arbitrary refinery pairs.
+The case is designed to study the ADMM coordination and disclosure-control
+methodology under clearly positive complementarity, not to estimate the profit
+of any real refinery. Results are not generalisable to arbitrary refinery pairs.
+This case is intended for methodological validation only and should not be
+interpreted as a real refinery operating case or a direct estimate of industrial
+commercial benefits.
