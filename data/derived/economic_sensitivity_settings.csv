@@ -1,0 +1,6 @@
+perturbation_type,setting,coordination_value_cny,rel_change_pct,note
+baseline,1.00,4119930.00,0.00,Reference scenario
+exchange_cost_multiplier,0.80,4123130.00,+0.08,Lower exchange costs
+exchange_cost_multiplier,0.90,4121530.00,+0.04,Slightly lower exchange costs
+exchange_cost_multiplier,1.10,4118330.00,-0.04,Slightly higher exchange costs
+exchange_cost_multiplier,1.20,4116730.00,-0.08,Higher exchange costs

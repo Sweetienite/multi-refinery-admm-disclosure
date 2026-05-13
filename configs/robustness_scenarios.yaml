@@ -1,0 +1,36 @@
+# robustness_scenarios.yaml — Economic parameter sensitivity scenarios
+#
+# Defines the perturbation grid for Table 6 (economic parameter sensitivity).
+# Each scenario perturbs the exchange cost multiplier and records the resulting
+# system coordination value relative to the baseline.
+
+scenario_family: economic_sensitivity
+baseline_coord_ub_multiplier: 2.0
+baseline_total_system_capacity: 8.15
+
+perturbations:
+  - type: exchange_cost_multiplier
+    values: [0.80, 0.90, 1.00, 1.10, 1.20]
+    description: >
+      Scales the relative economic advantage of coordination by adjusting
+      the effective exchange cost. A multiplier < 1.0 makes coordination
+      cheaper; > 1.0 makes it more expensive.
+
+# Paper-reported results for validation:
+reported_results:
+  - setting: 1.00
+    coordination_value_cny: 4119930.00
+    rel_change_pct: 0.00
+    label: baseline
+  - setting: 0.80
+    coordination_value_cny: 4123130.00
+    rel_change_pct: +0.08
+    label: exchange_cost_multiplier
+  - setting: 0.90
+    coordination_value_cny: 4121530.00
+    rel_change_pct: +0.04
+    label: exchange_cost_multiplier
+  - setting: 1.10
+    coordination_value_cny: 4118330.00
+    rel_change_pct: -0.04
+    label: exchange_cost_multiplier

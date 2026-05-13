@@ -1,0 +1,12 @@
+item,value
+decomposition,capacity-sharing ADMM
+rho,0.10
+max_iter,500
+primal_tol,0.001
+dual_tol,0.001
+actual_iterations,32
+final_primal_residual,7.1097e-05
+final_dual_residual,4.1687e-07
+admm_total_profit_cny,60288563.64
+rel_total_profit_error_pct,0.187
+rel_cv_gap_pct,2.75

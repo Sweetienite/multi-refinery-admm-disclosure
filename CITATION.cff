@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+title: "Multi-refinery ADMM disclosure reproducibility package"
+message: >
+  If you use this repository, please cite the associated manuscript
+  and the upstream refinery-petrochemical benchmark (see NOTICE.md).
+type: software
+repository-code: "https://github.com/Sweetienite/multi-refinery-admm-disclosure"
+version: "1.0.0"
+date-released: "2026-05-13"
+license: "MIT"
+keywords:
+  - refinery planning
+  - ADMM
+  - distributed optimization
+  - commercial information disclosure
+  - production planning
+  - multi-refinery coordination
+  - individual rationality
+abstract: >
+  Reproducibility package for the manuscript "ADMM-based coordinated production
+  planning and commercial information disclosure control for multi-refinery systems".
+  Includes Python implementations of the centralized LP reference model, ADMM
+  capacity-sharing approximation, individual-rationality transfer-payment interval
+  calculation, and observable commercial information exposure metrics.
+references:
+  - type: article
+    authors:
+      - family-names: Du
+        given-names: Wenli
+      - family-names: Wang
+        given-names: Chuan
+      - family-names: Fan
+        given-names: Chen
+      - family-names: Li
+        given-names: Zhi
+      - family-names: Zhong
+        given-names: Yeke
+      - family-names: Kang
+        given-names: Tianao
+      - family-names: Liang
+        given-names: Ziting
+      - family-names: Yang
+        given-names: Minglei
+      - family-names: Qian
+        given-names: Feng
+      - family-names: Dai
+        given-names: Xin
+    title: "A production planning benchmark for real-world refinery-petrochemical complexes"
+    year: 2025
+    url: "https://arxiv.org/abs/2503.22057"

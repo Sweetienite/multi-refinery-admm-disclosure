@@ -1,0 +1,6 @@
+scheme_name,weight_direct,weight_corridor,weight_temporal,weight_bottleneck,weight_side,description
+main,0.25,0.20,0.20,0.20,0.15,Main paper weight scheme
+uniform,0.20,0.20,0.20,0.20,0.20,Equal weights across all dimensions
+direct_heavy,0.40,0.15,0.15,0.15,0.15,Emphasises direct value revelation
+trajectory_heavy,0.15,0.15,0.25,0.25,0.20,Emphasises temporal and bottleneck exposure
+side_heavy,0.15,0.15,0.15,0.20,0.35,Emphasises side-channel inference
