@@ -79,6 +79,24 @@ python scripts/verify_reported_results.py
 python scripts/make_figures.py
 ```
 
+## Verification status
+
+The pre-computed result tables can be verified against the reported paper values without re-running the full model:
+
+```bash
+python scripts/verify_reported_results.py
+```
+
+Expected output: `17/17 checks passed` with `rel_err = 0.0000%` for all metrics.
+
+A full reproduction run (requires HiGHS solver via `highspy`) can be executed with:
+
+```bash
+python scripts/reproduce_all.py
+```
+
+The repository reproduces manuscript Tables 2–6 and Figures 2–5 from publicly derived case parameters. It does not contain enterprise production data or confidential industrial information.
+
 ## Expected key metrics
 
 | Metric | Value |
