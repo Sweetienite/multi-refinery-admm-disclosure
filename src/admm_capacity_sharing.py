@@ -17,6 +17,7 @@ Each plant subproblem:
     where y_i = sum(f_s) is the plant's local capacity usage.
 
 Revenue is scaled by ``profit_scale`` to improve ADMM numerical conditioning.
+Each sub-problem is a convex QP solved via scipy SLSQP.
 
 Main entry point: ``run_admm``
 """
@@ -26,7 +27,8 @@ import math
 from dataclasses import dataclass, field
 from typing import Optional
 
-import pyomo.environ as pyo
+import numpy as np
+from scipy.optimize import minimize as _scipy_minimize
 
 from src.centralized_lp import RefineryParams, CoordinationSpec
 
@@ -73,15 +75,8 @@ class ADMMResult:
 
 
 # ---------------------------------------------------------------------------
-# Sub-problem: single-refinery LP with augmented Lagrangian penalty
+# Sub-problem: single-refinery QP with augmented Lagrangian penalty
 # ---------------------------------------------------------------------------
-
-def _get_solver() -> pyo.SolverFactory:
-    s = pyo.SolverFactory("appsi_highs")
-    if s.available(exception_flag=False):
-        return s
-    return pyo.SolverFactory("highs")
-
 
 def _solve_subproblem(
     params: RefineryParams,
@@ -94,33 +89,35 @@ def _solve_subproblem(
     """
     Solve single-refinery sub-problem with ADMM augmented Lagrangian term.
 
+    The augmented Lagrangian penalty contains a quadratic proximal term
+    ``(rho/2) * (y - z)^2`` which makes each sub-problem a convex QP.
+    We solve it with scipy SLSQP, which is bundled with scipy (already a
+    project dependency) and does not require an external QP solver.
+
     Returns (local_capacity_usage_kt, local_profit_CNY).
     """
     streams = sorted(params.price)
-    m = pyo.ConcreteModel()
-    m.S = pyo.Set(initialize=streams)
-    m.f = pyo.Var(m.S, within=pyo.NonNegativeReals)
+    prices = np.array([params.price[s] for s in streams], dtype=float)
+    lb = np.array([params.flow_min.get(s, 0.0) for s in streams], dtype=float)
+    ub = np.array([coord_ub_multiplier * params.flow_max[s] for s in streams], dtype=float)
 
-    for s in streams:
-        m.f[s].setlb(params.flow_min.get(s, 0.0))
-        m.f[s].setub(coord_ub_multiplier * params.flow_max[s])
+    def neg_lagrangian(f: np.ndarray) -> float:
+        y = float(f.sum())
+        revenue_scaled = float((prices / profit_scale).dot(f))
+        penalty = lambda_k * y + (rho / 2.0) * (y - z_consensus) ** 2
+        return -(revenue_scaled - penalty)
 
-    # Local capacity usage
-    local_cap = sum(m.f[s] for s in streams)
-
-    # Objective: (scaled revenue) - dual penalty - proximal term
-    revenue_scaled = sum(params.price[s] / profit_scale * m.f[s] for s in streams)
-    penalty = lambda_k * local_cap + (rho / 2.0) * (local_cap - z_consensus) ** 2
-
-    m.obj = pyo.Objective(expr=revenue_scaled - penalty, sense=pyo.maximize)
-
-    solver = _get_solver()
-    solver.solve(m)
-
-    profit = sum(
-        params.price[s] * float(pyo.value(m.f[s])) for s in streams
+    bounds = list(zip(lb.tolist(), ub.tolist()))
+    # Initialise at lower bounds (feasible starting point)
+    f0 = lb.copy()
+    result = _scipy_minimize(
+        neg_lagrangian, f0, method="SLSQP",
+        bounds=bounds,
+        options={"ftol": 1e-10, "maxiter": 1000},
     )
-    alloc = float(pyo.value(sum(m.f[s] for s in streams)))
+    f_opt = np.clip(result.x, lb, ub)
+    profit = float(prices.dot(f_opt))
+    alloc = float(f_opt.sum())
     return alloc, profit
 
 
