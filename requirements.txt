@@ -5,3 +5,4 @@ scipy>=1.11
 highspy>=1.7
 pyomo>=6.7
 matplotlib>=3.7
+pytest>=7.0

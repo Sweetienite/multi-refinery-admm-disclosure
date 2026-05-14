@@ -1,0 +1,85 @@
+"""
+tests/test_admm.py — Unit tests for ADMM capacity-sharing.
+"""
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from src.centralized_lp import RefineryParams, CoordinationSpec, solve_centralized
+from src.admm_capacity_sharing import ADMMParams, run_admm
+
+
+PARAMS_A = RefineryParams(
+    name="A",
+    price={"s1": 1000.0, "s2": 500.0},
+    flow_min={"s1": 0.0, "s2": 0.0},
+    flow_max={"s1": 1.0, "s2": 1.0},
+)
+
+PARAMS_B = RefineryParams(
+    name="B",
+    price={"s3": 800.0, "s4": 300.0},
+    flow_min={"s3": 0.0, "s4": 0.0},
+    flow_max={"s3": 1.0, "s4": 1.0},
+)
+
+ADMM_FAST = ADMMParams(rho=0.10, max_iter=200, primal_tol=1e-3, dual_tol=1e-3)
+
+
+def test_admm_converges():
+    result = run_admm(PARAMS_A, PARAMS_B, admm_params=ADMM_FAST)
+    assert result.status == "converged", f"Expected converged, got {result.status}"
+    assert result.iterations > 0
+
+
+def test_admm_profit_nonnegative():
+    result = run_admm(PARAMS_A, PARAMS_B, admm_params=ADMM_FAST)
+    assert result.total_profit >= 0
+
+
+def test_admm_approximates_centralized():
+    """ADMM total profit should be within 5% of centralized LP."""
+    cent = solve_centralized(PARAMS_A, PARAMS_B)
+    admm = run_admm(PARAMS_A, PARAMS_B, admm_params=ADMM_FAST)
+    rel_err = abs(admm.total_profit - cent.total_profit) / max(abs(cent.total_profit), 1)
+    assert rel_err < 0.05, f"ADMM rel error {rel_err*100:.2f}% exceeds 5%"
+
+
+def test_admm_history_recorded():
+    result = run_admm(PARAMS_A, PARAMS_B, admm_params=ADMM_FAST)
+    assert len(result.history.primal_residuals) == result.iterations
+    assert len(result.history.dual_residuals) == result.iterations
+
+
+def test_paper_case_admm_error():
+    """Paper-reported ADMM relative error: 0.187% (Table 3)."""
+    import yaml
+    from scripts.run_main_case import build_refinery_params, build_coord_spec
+
+    config_path = ROOT / "configs" / "main_case.yaml"
+    with open(config_path, encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+
+    params_a = build_refinery_params(cfg, "A")
+    params_b = build_refinery_params(cfg, "B")
+    coord = build_coord_spec(cfg)
+    admm_cfg = cfg.get("admm", {})
+    admm_params = ADMMParams(
+        rho=admm_cfg.get("rho", 0.10),
+        max_iter=admm_cfg.get("max_iter", 500),
+        primal_tol=admm_cfg.get("primal_tol", 1e-3),
+        dual_tol=admm_cfg.get("dual_tol", 1e-3),
+        profit_scale=admm_cfg.get("profit_scale", 1e6),
+    )
+    cent = solve_centralized(params_a, params_b, coord)
+    admm = run_admm(params_a, params_b, coord, admm_params)
+
+    rel_err_pct = abs(admm.total_profit - cent.total_profit) / max(abs(cent.total_profit), 1) * 100
+    # Paper reports 0.187%; allow 0.1% tolerance
+    assert abs(rel_err_pct - 0.187) < 0.1, (
+        f"ADMM rel error {rel_err_pct:.3f}% differs from paper value 0.187%"
+    )

@@ -20,7 +20,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Syntax check
-        run: python -m py_compile src/*.py scripts/*.py
+        run: python -m py_compile src/*.py scripts/*.py tests/*.py
+
+      - name: Unit tests
+        run: python -m pytest tests/ -v --tb=short
 
       - name: Verify reported results
         run: python scripts/verify_reported_results.py
