@@ -26,7 +26,9 @@ jobs:
         run: python -m pytest tests/ -v --tb=short
 
       - name: Verify reported results
+        if: ${{ always() }}
         run: python scripts/verify_reported_results.py
 
       - name: Verify final-figure frozen inputs
+        if: ${{ always() }}
         run: python figures_final_release/source/validate_data.py
