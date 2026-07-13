@@ -121,6 +121,47 @@ def _solve_subproblem(
     return alloc, profit
 
 
+def _profit_at_capacity(
+    params: RefineryParams,
+    coord_ub_multiplier: float,
+    capacity: float,
+) -> float:
+    """Evaluate the feasible local revenue at a consensus capacity allocation."""
+    streams = sorted(params.price, key=params.price.get, reverse=True)
+    flow = {stream: params.flow_min.get(stream, 0.0) for stream in streams}
+    remaining = max(0.0, capacity - sum(flow.values()))
+    for stream in streams:
+        upper = coord_ub_multiplier * params.flow_max[stream]
+        add = min(max(0.0, upper - flow[stream]), remaining)
+        flow[stream] += add
+        remaining -= add
+        if remaining <= 1e-12:
+            break
+    return float(sum(params.price[stream] * flow[stream] for stream in streams))
+
+
+def _project_capacity_split(values: np.ndarray, total_capacity: float) -> np.ndarray:
+    """Project a two-refinery allocation onto ``z >= 0, sum(z) <= capacity``.
+
+    The ADMM consensus variable has one component per refinery.  Keeping these
+    components separate is essential: reducing them to a single average can
+    make both local subproblems converge to zero production even when the
+    joint capacity is feasible.
+    """
+    clipped = np.maximum(values, 0.0)
+    if float(clipped.sum()) <= total_capacity:
+        return clipped
+
+    # Euclidean projection onto the two-dimensional simplex.  The generic
+    # threshold construction also makes the intended constraint explicit.
+    ordered = np.sort(values)[::-1]
+    cumulative = np.cumsum(ordered)
+    rho = np.nonzero(ordered - (cumulative - total_capacity) /
+                     np.arange(1, len(values) + 1) > 0)[0][-1]
+    threshold = (cumulative[rho] - total_capacity) / (rho + 1)
+    return np.maximum(values - threshold, 0.0)
+
+
 # ---------------------------------------------------------------------------
 # ADMM coordinator
 # ---------------------------------------------------------------------------
@@ -137,7 +178,8 @@ def run_admm(
     The shared constraint is: y_A + y_B <= total_system_capacity
     where y_i is each refinery's local total flow (capacity usage).
 
-    The z-update projects the average onto [0, total_system_capacity].
+    The z-update projects the two-refinery consensus allocation onto the
+    non-negative shared-capacity simplex.
 
     Returns an ADMMResult with convergence statistics.
     """
@@ -155,43 +197,33 @@ def run_admm(
         total_cap = (sum(params_a.flow_max[s] for s in params_a.flow_max)
                      + sum(params_b.flow_max[s] for s in params_b.flow_max))
 
-    # Initialise
+    # Initialise one consensus allocation and multiplier per refinery.
     lambda_a, lambda_b = 0.0, 0.0
-    z = total_cap / 2.0
+    z_a = z_b = total_cap / 2.0
     history = ADMMHistory()
     profit_a = profit_b = 0.0
     y_a = y_b = 0.0
 
     for k in range(admm_params.max_iter):
         # x-updates
-        y_a, profit_a = _solve_subproblem(params_a, mult, z, lambda_a, rho, scale)
-        y_b, profit_b = _solve_subproblem(params_b, mult, z, lambda_b, rho, scale)
+        y_a, profit_a = _solve_subproblem(params_a, mult, z_a, lambda_a, rho, scale)
+        y_b, profit_b = _solve_subproblem(params_b, mult, z_b, lambda_b, rho, scale)
 
-        z_prev = z
-        # z-update: soft projection ensuring y_A + y_B <= total_cap
-        # z_i = (y_i - lambda_i / rho)  subject to z_A + z_B = total_cap,  z_i >= 0
-        z_a_unconstrained = y_a - lambda_a / rho
-        z_b_unconstrained = y_b - lambda_b / rho
-        # Projection: split capacity optimally (water-filling)
-        slack = total_cap - (z_a_unconstrained + z_b_unconstrained)
-        if slack >= 0:
-            z_a_new = z_a_unconstrained
-            z_b_new = z_b_unconstrained
-        else:
-            z_a_new = z_a_unconstrained + slack / 2.0
-            z_b_new = z_b_unconstrained + slack / 2.0
-        z_a_new = max(0.0, z_a_new)
-        z_b_new = max(0.0, z_b_new)
-        # Use average as scalar consensus for symmetric update
-        z = (z_a_new + z_b_new) / 2.0
+        z_prev = np.array([z_a, z_b], dtype=float)
+        # z-update: minimise the augmented Lagrangian over the shared-capacity
+        # set.  For L = f(y) + lambda*(y-z) + rho/2*(y-z)^2, the unconstrained
+        # minimiser is y + lambda/rho; project it onto the feasible split.
+        z_a, z_b = _project_capacity_split(
+            np.array([y_a + lambda_a / rho, y_b + lambda_b / rho]), total_cap
+        )
 
         # Dual updates
-        lambda_a = lambda_a + rho * (y_a - z)
-        lambda_b = lambda_b + rho * (y_b - z)
+        lambda_a = lambda_a + rho * (y_a - z_a)
+        lambda_b = lambda_b + rho * (y_b - z_b)
 
         # Residuals
-        primal_res = math.sqrt((y_a - z) ** 2 + (y_b - z) ** 2)
-        dual_res = math.sqrt(2.0) * rho * abs(z - z_prev)
+        primal_res = math.sqrt((y_a - z_a) ** 2 + (y_b - z_b) ** 2)
+        dual_res = rho * float(np.linalg.norm(np.array([z_a, z_b]) - z_prev))
 
         history.primal_residuals.append(primal_res)
         history.dual_residuals.append(dual_res)
@@ -201,13 +233,18 @@ def run_admm(
 
         if primal_res <= admm_params.primal_tol and dual_res <= admm_params.dual_tol:
             history.iterations = k + 1
+            # The x-updates can be marginally outside the shared-capacity set
+            # before the primal residual reaches zero. Report the objective at
+            # the feasible consensus allocation, not at that transient point.
+            feasible_profit_a = _profit_at_capacity(params_a, mult, float(z_a))
+            feasible_profit_b = _profit_at_capacity(params_b, mult, float(z_b))
             return ADMMResult(
                 status="converged",
-                total_profit=profit_a + profit_b,
-                profit_a=profit_a,
-                profit_b=profit_b,
-                allocation_a=y_a,
-                allocation_b=y_b,
+                total_profit=feasible_profit_a + feasible_profit_b,
+                profit_a=feasible_profit_a,
+                profit_b=feasible_profit_b,
+                allocation_a=float(z_a),
+                allocation_b=float(z_b),
                 iterations=k + 1,
                 final_primal_residual=primal_res,
                 final_dual_residual=dual_res,
@@ -215,13 +252,15 @@ def run_admm(
             )
 
     history.iterations = admm_params.max_iter
+    feasible_profit_a = _profit_at_capacity(params_a, mult, float(z_a))
+    feasible_profit_b = _profit_at_capacity(params_b, mult, float(z_b))
     return ADMMResult(
         status="max_iter",
-        total_profit=profit_a + profit_b,
-        profit_a=profit_a,
-        profit_b=profit_b,
-        allocation_a=y_a,
-        allocation_b=y_b,
+        total_profit=feasible_profit_a + feasible_profit_b,
+        profit_a=feasible_profit_a,
+        profit_b=feasible_profit_b,
+        allocation_a=float(z_a),
+        allocation_b=float(z_b),
         iterations=admm_params.max_iter,
         final_primal_residual=history.primal_residuals[-1] if history.primal_residuals else float("inf"),
         final_dual_residual=history.dual_residuals[-1] if history.dual_residuals else float("inf"),

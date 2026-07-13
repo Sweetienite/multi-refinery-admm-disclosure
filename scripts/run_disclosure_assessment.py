@@ -1,7 +1,9 @@
 """
 run_disclosure_assessment.py — Disclosure mechanism evaluation.
 
-Produces Table 4 (utility–exposure tradeoff) and Table 5 (weight sensitivity).
+Produces compact diagnostic counterparts of Table 4 (utility–exposure
+tradeoff) and Table 5 (weight sensitivity). The frozen manuscript tables are
+not overwritten.
 
 Runs ADMM under three disclosure settings:
   - none        : no disclosure control (baseline)
@@ -13,6 +15,7 @@ Then recomputes exposure scores under all five weight schemes for Table 5.
 from __future__ import annotations
 
 import csv
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -86,7 +89,8 @@ def _simulate_run(params_a, params_b, coord, admm_params, mechanism: str):
     return result, messages, all_streams
 
 
-def main() -> None:
+def main(output_dir: Path | None = None) -> None:
+    """Run a compact disclosure diagnostic without overwriting frozen tables."""
     config_path = ROOT / "configs" / "main_case.yaml"
     cfg = load_case_config(config_path)
     admm_cfg = cfg.get("admm", {})
@@ -126,7 +130,7 @@ def main() -> None:
 
     baseline_exposure = results_by_mech["none"]["exposure_score"]
 
-    out_dir = ROOT / "results" / "tables"
+    out_dir = output_dir or ROOT / "results" / "generated" / "disclosure_assessment"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # Table 4
@@ -185,8 +189,16 @@ def main() -> None:
     with open(out_dir / "table5_weight_sensitivity.csv", "w", newline="", encoding="utf-8") as f:
         csv.writer(f).writerows(table5_rows)
 
-    print("  → Table 4, Table 5 written.")
+    print(f"  → Diagnostic Table 4 and Table 5 outputs written to {out_dir}.")
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Run the compact disclosure diagnostic into a non-authoritative output directory."
+    )
+    parser.add_argument(
+        "--output-dir", type=Path, default=ROOT / "results" / "generated" / "disclosure_assessment",
+        help="Directory for diagnostic outputs; frozen manuscript tables are never overwritten by default.",
+    )
+    args = parser.parse_args()
+    main(args.output_dir)

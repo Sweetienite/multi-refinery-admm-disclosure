@@ -1,9 +1,10 @@
 """
 reproduce_all.py — Master reproduction script.
 
-Runs the full pipeline to reproduce Tables 2–6 and Figures 2–5 from the
-manuscript.  Results are written to ``results/tables/`` and figures to
-``results/figures/``.
+Runs the compact diagnostic pipeline and regenerates the final Figure 2-6
+panels from frozen public CSV inputs.  All outputs are written below
+``results/generated/``; archived manuscript tables and final PNGs are never
+overwritten.
 
 Usage:
     python scripts/reproduce_all.py
@@ -24,22 +25,22 @@ import scripts.make_figures as make_figures
 
 def main() -> None:
     print("=" * 60)
-    print("Multi-refinery ADMM Disclosure — Full Reproduction")
+    print("Multi-refinery ADMM Disclosure — Public Diagnostics and Figure Rendering")
     print("=" * 60)
 
-    print("\n[1/4] Running main case (centralized LP + ADMM)...")
+    print("\n[1/4] Running compact main-case diagnostic (centralized LP + ADMM)...")
     run_main_case.main()
 
-    print("\n[2/4] Running disclosure assessment...")
+    print("\n[2/4] Running compact disclosure diagnostic...")
     run_disclosure.main()
 
-    print("\n[3/4] Running sensitivity checks...")
+    print("\n[3/4] Exporting frozen sensitivity summary...")
     run_sensitivity.main()
 
-    print("\n[4/4] Generating figures...")
+    print("\n[4/4] Regenerating final Figures 2-6 from frozen inputs...")
     make_figures.main()
 
-    print("\nReproduction complete.  Results in results/tables/ and results/figures/")
+    print("\nReproduction complete. Diagnostic outputs are in results/generated/.")
 
 
 if __name__ == "__main__":

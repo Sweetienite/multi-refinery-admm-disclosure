@@ -22,7 +22,8 @@ This repository reproduces:
 - ADMM capacity-sharing approximation (`src/admm_capacity_sharing.py`)
 - Individual-rationality transfer-payment interval calculation (`src/transfer_payment_ir.py`)
 - Observable commercial information exposure metrics (`src/disclosure_metrics.py`)
-- Figure generation code (`src/plotting.py`)
+- Final figure renderer and frozen inputs (`figures_final_release/source/`)
+- Legacy exploratory plotting helpers (`src/plotting.py`; not final manuscript figures)
 - Result verification (`src/validation.py`)
 - Derived case parameters (`data/derived/`)
 - Pre-computed result tables (`results/tables/`)
@@ -70,13 +71,13 @@ A solver is required. HiGHS is recommended and installed automatically via `high
 ## Reproduce results
 
 ```bash
-# Run all experiments and regenerate result tables
+# Run compact diagnostics plus final figure regeneration into results/generated/
 python scripts/reproduce_all.py
 
 # Verify computed results match reported paper values
 python scripts/verify_reported_results.py
 
-# Generate figures
+# Regenerate final Figures 2-6 from frozen inputs into results/generated/final_figures/
 python scripts/make_figures.py
 ```
 
@@ -90,13 +91,13 @@ python scripts/verify_reported_results.py
 
 Expected output: `17/17 checks passed` with `rel_err = 0.0000%` for all metrics.
 
-A full reproduction run (requires HiGHS solver via `highspy`) can be executed with:
+A compact public-model diagnostic run (requires HiGHS solver via `highspy`) can be executed with:
 
 ```bash
 python scripts/reproduce_all.py
 ```
 
-The repository reproduces manuscript Tables 2–6 and Figures 2–6 from publicly derived case parameters. It does not contain enterprise production data or confidential industrial information.
+The repository publishes the manuscript Tables 2–6 and Figures 2–6 from publicly derived case parameters. The authoritative submitted panels and their frozen inputs are under `figures_final_release/`; compact diagnostic scripts write only below `results/generated/` and do not overwrite the submitted artifacts. It does not contain enterprise production data or confidential industrial information.
 
 ## Final submitted figures (Figures 2–6)
 
@@ -118,8 +119,19 @@ python figures_final_release/source/plot_revised_figures_v2.py \
 
 The frozen values are derived from public benchmark parameters and scripts.
 They do not include enterprise production data or confidential production
-information. See `figures_final_release/source/source_index.md` for the exact
-upstream repository, commit, programs, and figure-to-data mapping.
+information. See `figures_final_release/source/source_index.md` for the public
+benchmark source and complete local figure-to-data mapping.
+
+For a complete consistency check of the published tables and figures, run:
+
+```bash
+python scripts/validate_public_release.py
+```
+
+The audit distinguishes the immutable manuscript artifacts from compact
+diagnostic implementations, so a diagnostic rerun cannot silently replace a
+reported table or final figure. See `docs/final_release_audit.md` for scope and
+source details.
 
 ## Expected key metrics
 

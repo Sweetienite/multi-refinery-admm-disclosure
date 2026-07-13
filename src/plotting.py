@@ -1,11 +1,9 @@
-"""
-plotting.py — Figure generation for the multi-refinery ADMM disclosure paper.
+"""Legacy exploratory plotting helpers.
 
-Generates Figures 2–5 matching the paper layout.
-
-Usage:
-    from src.plotting import make_all_figures
-    make_all_figures(results_dir="results", output_dir="results/figures")
+These English-language 300 dpi charts are retained for historical reference
+only.  They are not the final manuscript Figures 2-6.  Use
+``scripts/make_figures.py`` or the renderer in ``figures_final_release/`` for
+the authoritative final panels.
 """
 from __future__ import annotations
 
@@ -169,7 +167,7 @@ def fig5_economic_sensitivity(
 # ---------------------------------------------------------------------------
 
 def make_all_figures(results_dir: str = "results", output_dir: str = "results/figures") -> None:
-    """Regenerate Figures 2–5 from pre-computed result files."""
+    """Generate legacy exploratory charts; not final manuscript figures."""
     import json
     import csv
 

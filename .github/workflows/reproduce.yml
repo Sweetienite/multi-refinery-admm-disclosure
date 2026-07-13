@@ -32,3 +32,7 @@ jobs:
       - name: Verify final-figure frozen inputs
         if: ${{ always() }}
         run: python figures_final_release/source/validate_data.py
+
+      - name: Audit published tables and final figures
+        if: ${{ always() }}
+        run: python scripts/validate_public_release.py

@@ -1,14 +1,15 @@
 """
 run_main_case.py — Centralized LP and ADMM main case run.
 
-Produces data for Table 2 (system profit, ADMM approximation, IR interval)
-and Table 3 (ADMM convergence).
+Produces a compact diagnostic counterpart of the Table 2 and Table 3
+calculations. The frozen manuscript tables are not overwritten.
 
 Case parameters are loaded from configs/main_case.yaml.
 """
 from __future__ import annotations
 
 import csv
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -50,7 +51,8 @@ def build_coord_spec(cfg: dict) -> CoordinationSpec:
     )
 
 
-def main() -> None:
+def main(output_dir: Path | None = None) -> None:
+    """Run the compact public model without altering frozen manuscript outputs."""
     config_path = ROOT / "configs" / "main_case.yaml"
     cfg = load_case_config(config_path)
     admm_cfg = cfg.get("admm", {})
@@ -97,7 +99,7 @@ def main() -> None:
     print(f"  Coordination-value gap:      {rel_err_cv*100:.2f}%")
 
     # 4. Write tables
-    out_dir = ROOT / "results" / "tables"
+    out_dir = output_dir or ROOT / "results" / "generated" / "main_case"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # Table 2
@@ -137,14 +139,8 @@ def main() -> None:
     with open(out_dir / "table3_admm_convergence.csv", "w", newline="", encoding="utf-8") as f:
         csv.writer(f).writerows(table3_rows)
 
-    # Update expected_metrics.json
-    metrics_path = ROOT / "results" / "expected_metrics.json"
-    if metrics_path.exists():
-        with open(metrics_path, encoding="utf-8") as f:
-            metrics = json.load(f)
-    else:
-        metrics = {}
-    metrics.update({
+    # Write diagnostic metrics next to the diagnostic tables.
+    metrics = {
         "standalone_profit_a": cent.standalone_profit_a,
         "standalone_profit_b": cent.standalone_profit_b,
         "standalone_total_profit": total_standalone,
@@ -157,12 +153,20 @@ def main() -> None:
         "admm_cv_gap_pct": rel_err_cv * 100,
         "ir_t_lo": ir.t_lo,
         "ir_t_hi": ir.t_hi,
-    })
-    with open(metrics_path, "w", encoding="utf-8") as f:
+    }
+    with open(out_dir / "expected_metrics.json", "w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2, ensure_ascii=False)
 
-    print("  → Table 2, Table 3 written.")
+    print(f"  → Diagnostic Table 2 and Table 3 outputs written to {out_dir}.")
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Run the compact public ADMM model into a non-authoritative output directory."
+    )
+    parser.add_argument(
+        "--output-dir", type=Path, default=ROOT / "results" / "generated" / "main_case",
+        help="Directory for diagnostic outputs; frozen manuscript tables are never overwritten by default.",
+    )
+    args = parser.parse_args()
+    main(args.output_dir)

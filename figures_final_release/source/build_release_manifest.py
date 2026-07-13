@@ -46,10 +46,10 @@ def main() -> None:
     manifest = {
         "release_version": "v1.0.1-paper-submission",
         "release_note": "Same-name revision containing final submitted Figure 2-6 panels and reproducibility assets.",
-        "upstream_source": {
-            "repository": "https://github.com/Sweetienite/-benchmark-derived-.git",
-            "branch": "e1-research-design-rebuild",
-            "commit": "3b912c6f759533cb658fdae0cb9e53727a5fe3a2",
+        "public_parameter_source": {
+            "repository": "https://github.com/EMRPS/refinery-planning-benchmark",
+            "case_file": "https://github.com/EMRPS/refinery-planning-benchmark/blob/main/case3/case3.gms",
+            "scope": "Frozen public-parameter-derived plotting inputs and self-contained figure renderer.",
         },
         "exports": exports,
     }

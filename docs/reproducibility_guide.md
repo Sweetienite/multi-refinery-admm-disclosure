@@ -1,5 +1,25 @@
 # Reproducibility guide
 
+## Authoritative manuscript artifacts
+
+The following files are the authoritative public records for the submitted
+manuscript:
+
+- Tables 2–6: `results/tables/` and `results/expected_metrics.json`
+- Final Figure 2–6 panels, frozen plotting CSVs, renderer, checksums, and
+  source-program index: `figures_final_release/`
+
+Run this before using or rerendering the package:
+
+```bash
+python scripts/validate_public_release.py
+```
+
+The public benchmark source and local frozen data-to-figure mapping are listed
+in `figures_final_release/source/source_index.md`. The compact model in `src/`
+is an independently runnable diagnostic implementation; it is not presented
+as a byte-for-byte replacement for the frozen 32-iteration trace.
+
 ## Prerequisites
 
 - Python ≥ 3.10
@@ -20,7 +40,7 @@ python -m venv .venv
 
 pip install -r requirements.txt
 
-# Reproduce all tables and figures:
+# Run compact diagnostics and render final Figures 2-6 to results/generated/:
 python scripts/reproduce_all.py
 
 # Verify against paper-reported values:
@@ -29,45 +49,46 @@ python scripts/verify_reported_results.py
 
 ## Step-by-step
 
-### 1. Main case (Tables 2 and 3)
+### 1. Compact main-case diagnostic
 
 ```bash
 python scripts/run_main_case.py
 ```
 
-Writes:
-- `results/tables/table2_system_profit.csv`
-- `results/tables/table3_admm_convergence.csv`
-- `results/expected_metrics.json` (updated)
+Writes non-authoritative diagnostic outputs to:
 
-### 2. Disclosure assessment (Tables 4 and 5)
+- `results/generated/main_case/table2_system_profit.csv`
+- `results/generated/main_case/table3_admm_convergence.csv`
+- `results/generated/main_case/expected_metrics.json`
+
+### 2. Compact disclosure diagnostic
 
 ```bash
 python scripts/run_disclosure_assessment.py
 ```
 
-Writes:
-- `results/tables/table4_disclosure_tradeoff.csv`
-- `results/tables/table5_weight_sensitivity.csv`
+Writes non-authoritative diagnostic outputs to
+`results/generated/disclosure_assessment/`.
 
-### 3. Economic sensitivity (Table 6)
+### 3. Frozen economic sensitivity export
 
 ```bash
 python scripts/run_sensitivity_checks.py
 ```
 
-Writes:
-- `results/tables/table6_economic_sensitivity.csv`
+Exports the checked public sensitivity summary to
+`results/generated/sensitivity/table6_economic_sensitivity.csv`. It does not
+claim to recalculate the sensitivity from the compact LP objective.
 
-### 4. Generate figures
+### 4. Generate final figures
 
 ```bash
 python scripts/make_figures.py
 ```
 
-Writes figures to `results/figures/`.
-Figure 1 (methodology flowchart) is a manually composed figure and is not regenerated
-by script; the PNG is stored directly in `results/figures/`.
+Writes the nine final panels to `results/generated/final_figures/`. The archived
+submission PNGs under `figures_final_release/results/` are never overwritten.
+Figure 1 is outside this package's regeneration scope.
 
 ## Troubleshooting
 
@@ -75,7 +96,8 @@ by script; the PNG is stored directly in `results/figures/`.
 If HiGHS is not available, install a compatible solver (GLPK, CBC) and update
 the solver factory calls in `src/centralized_lp.py`.
 
-**Numerical differences**: the ADMM implementation uses a standard symmetric
-z-update. Results may differ slightly from the paper (which uses the project's
-internal ADMM) due to subproblem decomposition differences.  
-The pre-computed tables in `results/tables/` record the exact paper-reported values.
+**Numerical differences**: the compact ADMM implementation is tested for
+convergence and proximity to the centralized LP. The paper's exact 32-iteration
+trace is supplied as a frozen public result series in the final-release source
+directory. The frozen tables and final figure inputs record the exact reported
+values and are protected from being overwritten by compact diagnostics.
