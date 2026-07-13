@@ -27,3 +27,6 @@ jobs:
 
       - name: Verify reported results
         run: python scripts/verify_reported_results.py
+
+      - name: Verify final-figure frozen inputs
+        run: python figures_final_release/source/validate_data.py

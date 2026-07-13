@@ -14,7 +14,7 @@ This repository reproduces:
 - Table 4: utility–exposure tradeoff across disclosure mechanisms
 - Table 5: observable exposure score weight sensitivity
 - Table 6: economic parameter sensitivity
-- Figures 2–5
+- Figures 2–6
 
 ## What is included
 
@@ -27,6 +27,7 @@ This repository reproduces:
 - Derived case parameters (`data/derived/`)
 - Pre-computed result tables (`results/tables/`)
 - Final paper figures (`results/figures/`)
+- Final submitted figure release for Figures 2–6 (`figures_final_release/`)
 
 ## What is not included
 
@@ -95,7 +96,30 @@ A full reproduction run (requires HiGHS solver via `highspy`) can be executed wi
 python scripts/reproduce_all.py
 ```
 
-The repository reproduces manuscript Tables 2–6 and Figures 2–5 from publicly derived case parameters. It does not contain enterprise production data or confidential industrial information.
+The repository reproduces manuscript Tables 2–6 and Figures 2–6 from publicly derived case parameters. It does not contain enterprise production data or confidential industrial information.
+
+## Final submitted figures (Figures 2–6)
+
+`figures_final_release/` is the authoritative final submission package for the
+nine independent panels of Figures 2–6. It contains the exported 600 dpi RGB
+PNG files, the frozen CSV inputs, the plotting script, data checks, checksums,
+and a source-program index. The older files in `results/figures/` are retained
+as historical reproduction outputs and must not be substituted for this final
+submission package.
+
+To validate the frozen inputs and regenerate the figures into a separate
+directory (leaving the archived final PNGs untouched):
+
+```bash
+python figures_final_release/source/validate_data.py
+python figures_final_release/source/plot_revised_figures_v2.py \
+  --output-dir /tmp/final-figure-render
+```
+
+The frozen values are derived from public benchmark parameters and scripts.
+They do not include enterprise production data or confidential production
+information. See `figures_final_release/source/source_index.md` for the exact
+upstream repository, commit, programs, and figure-to-data mapping.
 
 ## Expected key metrics
 

@@ -14,6 +14,11 @@ Pre-computed result tables from the manuscript.
 
 ## Figures
 
+The files listed below are historical reproduction outputs. The authoritative
+final manuscript panels for Figures 2–6 are in
+[`../figures_final_release/`](../figures_final_release/), together with their
+frozen inputs, plotting script, checksums, and source-program index.
+
 | File | Paper figure | Description |
 |------|-------------|-------------|
 | `figures/fig1_methodology_flowchart.png` | Figure 1 | Methodology flowchart (manually drawn) |
