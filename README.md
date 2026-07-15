@@ -30,10 +30,11 @@ The table and figure files retained in this repository are historical release
 artifacts.  They are not an alternative numerical authority and must not be
 cited when they differ from the pinned reconstruction.  In particular, use the
 reconstruction branch for the ADMM payment interval, run counts, and
-trace-derived exposure values.  The reconstruction branch also preserves the
+trace-derived exposure values.  The reconstruction branch preserves the
 historical H5 `60/24/15` count and `0.285/0.273` center-value exposure
-approximation as provenance evidence; these must not be silently replaced by
-the current `60/26/16` row-level audit or current trace-derived scores.
+approximation as provenance evidence, the historical row-level `60/26/16`
+audit, and a separate corrected-projection `60/16/16` audit. These must not be
+silently merged or substituted for one another.
 
 ## What is not included here
 
