@@ -29,12 +29,14 @@ and exchange structure but omits these complexities.
 
 ## ADMM convergence
 
-The ADMM capacity-sharing decomposition used in this repository implements a
-standard symmetric z-update.  The internal project implementation uses a
-price-normalized, warm-started ADMM with specific residual scaling.  Iteration
-counts and residual values from `scripts/run_main_case.py` may differ from the
-paper-reported values (Table 3).  The **pre-computed tables** in `results/tables/`
-record the exact paper values.
+The reader repository is not the numerical authority.  The historical
+internal H3B implementation uses a price-normalized, warm-started ADMM and a
+proportional capacity rescaling in its coordinator step; that reproduces the
+historical 32-iteration value but is not the Euclidean projection of the
+declared quadratic z-subproblem.  The authoritative reconstruction branch
+keeps both the historical result and a separately labelled Euclidean-
+projection forensic reference.  Do not describe the historical value as
+strictly equivalent to the centralized LP.
 
 ## Disclosure metrics
 

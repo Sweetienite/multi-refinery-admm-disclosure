@@ -4,15 +4,16 @@ The manuscript-equivalent numerical evidence is maintained in exactly one
 place: the
 [`rebuild/missing-evidence-20260715` branch of the benchmark-derived repository](https://github.com/Sweetienite/-benchmark-derived-/tree/rebuild/missing-evidence-20260715).
 The audited revision is pinned to commit
-[`b05365182ea5d81616199ca747cbe37ec50b28bf`](https://github.com/Sweetienite/-benchmark-derived-/tree/b05365182ea5d81616199ca747cbe37ec50b28bf).
+[`abbb3bc886e3510edef8f0eb4148a5969f7a50cd`](https://github.com/Sweetienite/-benchmark-derived-/tree/abbb3bc886e3510edef8f0eb4148a5969f7a50cd).
 
 It rebuilds and checks the following chain from versioned inputs:
 
 1. HiGHS standalone and centralized LP solutions, with independent LP/MPS
    replay;
 2. the individual-rationality transfer interval;
-3. the 32-iteration H3B distributed trace and its gap to the centralized
-   reference;
+3. the historical 32-iteration H3B distributed trace, its gap to the
+   centralized reference, and a separately recorded Euclidean-projection
+   forensic reference;
 4. 60 disclosure traces and their run-level eligibility audit; and
 5. the machine-readable reconstruction gate.
 
@@ -21,7 +22,7 @@ To reproduce the numerical evidence:
 ```bash
 git clone https://github.com/Sweetienite/-benchmark-derived-.git
 cd -benchmark-derived-
-git checkout b05365182ea5d81616199ca747cbe37ec50b28bf
+git checkout abbb3bc886e3510edef8f0eb4148a5969f7a50cd
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\\Scripts\\Activate.ps1
 pip install -r requirements.txt
@@ -41,4 +42,7 @@ The reconstruction branch also states the necessary limits on interpretation:
 the case is a shared-capacity allocation benchmark, objective values are not
 observed enterprise profits, and disclosure results are empirical
 trace-based observable-exposure measurements rather than formal privacy
-guarantees.
+guarantees. It also preserves the historical H5 count `60/24/15` as a
+document snapshot while the current row-level audit is `60/26/16`; the old
+H4D1R CSV behind `24/15` was not committed. These are provenance labels, not
+interchangeable replacements.
