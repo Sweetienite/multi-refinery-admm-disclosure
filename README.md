@@ -26,6 +26,12 @@ repository, rather than duplicated here with a second implementation.
 - A compact diagnostic model useful for code inspection, but not as the
   manuscript’s numerical source of truth.
 
+The table and figure files retained in this repository are historical release
+artifacts.  They are not an alternative numerical authority and must not be
+cited when they differ from the pinned reconstruction.  In particular, use the
+reconstruction branch for the ADMM payment interval, run counts, and
+trace-derived exposure values.
+
 ## What is not included here
 
 - Enterprise production or operating data.
