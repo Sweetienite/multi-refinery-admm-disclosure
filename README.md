@@ -4,10 +4,10 @@ Reader-facing release for the manuscript *ADMM-based coordinated production
 planning and commercial information disclosure control for multi-refinery
 systems*.
 
-This repository provides the released tables, figures, derived public inputs,
-and checks that keep those presentation artifacts internally consistent.  The
-full numerical reconstruction is deliberately kept in one authoritative source
-repository, rather than duplicated here with a second implementation.
+This repository is the reader-facing release. It provides the released tables,
+figures, derived public inputs, and checks needed to validate and redraw those
+artifacts. The full numerical trace archive is deliberately kept in one
+authoritative source repository rather than duplicated here.
 
 ## Start here
 
@@ -18,13 +18,30 @@ repository, rather than duplicated here with a second implementation.
   the disclosure results.  It is a compact diagnostic implementation with
   different algorithmic behavior.
 
+## Numerical status
+
+The frozen public tables preserve the historical release chain. The numbers are
+valid as historical artifacts, but they are not silently substituted for the
+separately corrected forensic chain:
+
+| Evidence layer | Value/status |
+|---|---|
+| H2F centralized LP | `60,401,700 CNY` |
+| Historical H3B implementation | `60,288,563.636 CNY`; proportional projection, 32 iterations |
+| Corrected H3B reference | `60,401,701.135 CNY`; Euclidean projection, tight tolerance |
+| Historical H4D1 audit | `60/26/16` (total/converged/eligible) |
+| Corrected H4D1 grid | `60/16/16`, stored in the pinned authoritative branch |
+
+Use the pinned reconstruction branch for the corrected numerical chain. Do not
+combine historical H3B/H4D1/H5 values with corrected rows.
+
 ## What is included here
 
 - Released Tables 2–6 and Figures 2–6.
 - Derived, non-confidential benchmark parameters.
 - Frozen figure inputs, renderer, checksums, and presentation-artifact checks.
 - A compact diagnostic model useful for code inspection, but not as the
-  manuscript’s numerical source of truth.
+  full-trace numerical source of truth.
 
 The table and figure files retained in this repository are historical release
 artifacts.  They are not an alternative numerical authority and must not be

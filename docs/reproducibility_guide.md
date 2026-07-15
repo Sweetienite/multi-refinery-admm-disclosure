@@ -1,9 +1,11 @@
 # Reproducibility guide
 
-## Authoritative manuscript artifacts
+## Frozen public artifacts
 
-The following files are the authoritative public records for the submitted
-manuscript:
+The following files are the public release records for the submitted-artifact
+package. They are internally checked and reproducible as presentation
+artifacts; the corrected numerical authority is the pinned reconstruction
+branch described in `docs/authoritative_case4l_evidence.md`.
 
 - Tables 2–6: `results/tables/` and `results/expected_metrics.json`
 - Final Figure 2–6 panels, frozen plotting CSVs, renderer, checksums, and
@@ -96,8 +98,10 @@ Figure 1 is outside this package's regeneration scope.
 If HiGHS is not available, install a compatible solver (GLPK, CBC) and update
 the solver factory calls in `src/centralized_lp.py`.
 
-**Numerical differences**: the compact ADMM implementation is tested for
-convergence and proximity to the centralized LP. The paper's exact 32-iteration
-trace is supplied as a frozen public result series in the final-release source
-directory. The frozen tables and final figure inputs record the exact reported
-values and are protected from being overwritten by compact diagnostics.
+**Numerical differences**: the compact ADMM implementation is a reader-facing
+diagnostic and is not the authoritative full-trace implementation. The exact
+historical 32-iteration trace is supplied as a frozen public result series; the
+separately corrected Euclidean-projection reference and corrected 60-run grid
+are pinned in the authoritative reconstruction branch. The frozen tables and
+final figure inputs record the historical release artifacts and are protected
+from being overwritten by compact diagnostics.
