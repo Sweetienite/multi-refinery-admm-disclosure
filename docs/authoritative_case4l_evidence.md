@@ -4,7 +4,7 @@ The manuscript-equivalent numerical evidence is maintained in exactly one
 place: the
 [`rebuild/missing-evidence-20260715` branch of the benchmark-derived repository](https://github.com/Sweetienite/-benchmark-derived-/tree/rebuild/missing-evidence-20260715).
 The audited revision is pinned to commit
-[`abbb3bc886e3510edef8f0eb4148a5969f7a50cd`](https://github.com/Sweetienite/-benchmark-derived-/tree/abbb3bc886e3510edef8f0eb4148a5969f7a50cd).
+[`d6ce18195864f273ebf3e02b718a1fa57c771431`](https://github.com/Sweetienite/-benchmark-derived-/tree/d6ce18195864f273ebf3e02b718a1fa57c771431).
 
 It rebuilds and checks the following chain from versioned inputs:
 
@@ -22,7 +22,7 @@ To reproduce the numerical evidence:
 ```bash
 git clone https://github.com/Sweetienite/-benchmark-derived-.git
 cd -benchmark-derived-
-git checkout abbb3bc886e3510edef8f0eb4148a5969f7a50cd
+git checkout d6ce18195864f273ebf3e02b718a1fa57c771431
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\\Scripts\\Activate.ps1
 pip install -r requirements.txt
