@@ -1,0 +1,4 @@
+﻿mechanism,rho,objective_CNY,coordination_utility_retention,observable_exposure_score,exposure_reduction_pct,marker
+未控制消息暴露基准,1/10,,1.0,1.0,0.0,baseline
+分阶段量化,1.0,60401181.44321881,0.9998741345651049,0.38148768174258835,61.85123182574117,square
+配置量分桶,10.0,60400230.30631116,0.9996432721699544,0.5005111515082138,49.94888484917862,triangle
