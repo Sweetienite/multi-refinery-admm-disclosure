@@ -11,3 +11,5 @@
 ## CI 校验修复
 
 `v1.2.2-paper-final-ci-fix-20260727` 在上述公开材料基础上修正了两份带有 `.gitattributes` LF 规范的 CSV 校验哈希，并同步规范化工作树换行符。该修复解决了 GitHub Actions 在干净检出环境中执行 `verify_release.py` 时的 checksum mismatch；旧 tag 和历史均未改写。
+
+`v1.2.3-paper-alignment-20260727` 进一步将当前论文范围（表 2—表 5、图 1—图 4）明确写入 README，并将该已验证 release 同步到 GitHub 默认 `main` 分支，确保直接打开仓库地址即可看到当前论文口径。
