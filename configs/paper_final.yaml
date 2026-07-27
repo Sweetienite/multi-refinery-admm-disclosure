@@ -1,0 +1,31 @@
+release_id: paper_final_202607
+projection: euclidean_simplex
+centralized:
+  solver: highs
+admm_reference:
+  rho: 0.1
+  max_iterations: 10000
+  primal_tolerance: 1.0e-7
+  dual_tolerance: 1.0e-7
+privacy_runs:
+  seeds: [20260511, 20260512, 20260513]
+  stopping_tolerance: 1.0e-3
+  stagewise_quantization:
+    mode: adaptive_ts_ladder
+    rho: 1.0
+    widths_kt: [0.75, 0.375, 0.125]
+    stage_boundaries: [50, 150]
+  allocation_bucket:
+    mode: stream_bucket
+    rho: 10.0
+    bucket_width_kt: 0.01
+exposure:
+  hotspot_fraction: 0.20
+  capacity_pressure_tolerance_kt: 1.0e-3
+  weights:
+    E_exact: 0.25
+    E_stream: 0.20
+    E_temporal: 0.20
+    E_capacity: 0.20
+    E_aggregate: 0.15
+utility_retention_denominator: centralized_synergy_uplift

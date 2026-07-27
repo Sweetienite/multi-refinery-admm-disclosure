@@ -5,8 +5,8 @@ message: >
   and the upstream refinery-petrochemical benchmark (see NOTICE.md).
 type: software
 repository-code: "https://github.com/Sweetienite/multi-refinery-admm-disclosure"
-version: "v1.0.1-paper-submission"
-date-released: "2026-07-13"
+version: "v1.2.0-paper-final-20260727"
+date-released: "2026-07-27"
 license: "MIT"
 keywords:
   - refinery planning

@@ -12,6 +12,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -r figures_final_release/requirements.txt
-      - run: python figures_final_release/code/verify_release.py
-      - run: python scripts/validate_paper_release_20260717.py
+      - run: pip install -r requirements.txt
+      - run: python scripts/verify_release.py
+      - run: python scripts/generate_paper_figures.py --data-dir data --output-dir figures/named

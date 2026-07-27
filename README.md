@@ -1,42 +1,32 @@
-# Multi-refinery ADMM Disclosure — Final Paper Release
+# ADMM多炼油厂计划协同优化与商业信息披露控制
 
-Reader-facing reproducibility release for the revised manuscript on ADMM-based multi-refinery coordinated production planning and commercial information disclosure control.
+这是论文读者使用的最终复现材料。当前 release 由封闭仓库 `paper-final-20260727` 导出，包含权威 CSV、8 张最终分图、便携出图脚本和验证脚本；私有 raw trace、内部审计材料和编辑稿不在公开仓库中。
 
-## Final numerical chain
+## 当前权威结果
 
-| Item | Final value |
-|---|---:|
-| Standalone model objective | 56,281,770 CNY |
-| Centralized coordinated objective | 60,401,700 CNY |
-| Coordination value | 4,119,930 CNY |
-| Euclidean-projection ADMM objective | 60,401,701.13487248 CNY |
-| ADMM iterations | 60 |
-| ADMM–centralized difference | 1.13487248 CNY |
-| Positive allocation increment | 3.78 kt |
-| Feasible A-to-B compensation | 887,820–5,007,750 CNY |
+- 系统协同价值：4,119,930 元；中心化目标值：60,401,700 元。
+- 欧氏投影 ADMM：60 次达到双残差 `1e-7` 停止条件，目标值与中心化参考相差 1.13487248 元。
+- 正向配置增量合计：3.78 kt。它是相对独立运营基准的配置变化合计，不是企业真实跨厂物理输送总量。
+- A 向 B 的可行支付范围：887,820～5,007,750 元。
+- 分阶段量化：暴露降低率 61.85%，协同收益保留率 99.987%。
+- 0.01 kt 配置量分桶：暴露降低率 49.95%，协同收益保留率 99.964%。
 
-## Disclosure-control results
+暴露分数是给定公开字段、恢复规则和权重下的经验性可观察程度指标，不是差分隐私、密码学安全或形式化隐私保证。仓库不含企业真实生产数据或涉密信息。
 
-| Mechanism | Utility retention | Exposure score | Exposure reduction |
-|---|---:|---:|---:|
-| Stagewise quantization | 99.987% | 0.381488 | 61.85% |
-| 0.01 kt allocation bucketing | 99.964% | 0.500511 | 49.95% |
+## 方法与复现
 
-The iteration order remains visible. The mechanisms control the numerical resolution of aggregate allocation messages and the visibility of active-stream identifiers. The exposure score is an empirical trace-based measure under the published fields, recovery rules, and weights; it is not a differential privacy, SMPC, cryptographic-security, or formal privacy guarantee.
+方法链为：中心化参考 → 非负共享容量集合的欧氏投影 ADMM → 个体理性支付区间 → 分阶段量化/配置量分桶 → 五分量暴露评分。收益保留率统一以中心化协同增量为分母：
 
-## Repository scope
-
-This repository contains the final paper-facing data, figures, plotting code, scoring summaries, and validation scripts. It supports independent redrawing and validation of the released table/figure values. Historical material is retained under `archive/` and must not be combined with the current release.
-
-## Quick validation
+`(机制目标值 - 独立运营总收益) / (中心化协同目标值 - 独立运营总收益)`。
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\Activate.ps1
-pip install -r figures_final_release/requirements.txt
-python figures_final_release/code/verify_release.py
-python scripts/validate_paper_release_20260717.py
-python figures_final_release/code/generate_all_figures.py
+source .venv/bin/activate
+pip install -r requirements.txt
+python scripts/generate_paper_figures.py --data-dir data --output-dir figures/named
+python scripts/verify_release.py
 ```
 
-The model objectives are CNY-valued optimization objectives derived from public benchmark coefficients. They are not observed enterprise profits or estimates for a specific refinery. No enterprise production or confidential operating data are included.
+出图脚本只读取 `data/` 下的 CSV，路径可通过命令行参数指定；不会从脚本内的另一套常量生成结果。公开仓库只展示论文 release，不提供封闭仓库的 raw/private trace。
+
+旧版提交材料仍可在 `archive/legacy_public_20260717/` 中追溯，但不得与当前 `data/`、`figures/` 或 README 混用。
