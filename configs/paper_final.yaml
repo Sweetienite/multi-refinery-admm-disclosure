@@ -1,4 +1,4 @@
-release_id: paper_final_202607
+release_id: paper_final_20260727
 projection: euclidean_simplex
 centralized:
   solver: highs

@@ -1,5 +1,0 @@
-release_name=admm_paper_figure_release_20260717
-release_date=2026-07-17
-source_branch=rebuild/missing-evidence-20260715
-source_commit=c79c18ec8a372c10902d7912e165c5abbba1bd22
-manuscript=基于ADMM的多炼厂协同计划与商业信息披露控制_最终修正稿.docx

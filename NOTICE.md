@@ -2,7 +2,7 @@
 
 ## Upstream benchmark
 
-The case parameters in `data/derived/` are derived from the public refinery-petrochemical
+The case parameters in `data/` are derived from the public refinery-petrochemical
 production planning benchmark originally published by:
 
 > Wenli Du, Chuan Wang, Chen Fan, Zhi Li, Yeke Zhong, Tianao Kang, Ziting Liang,
@@ -19,7 +19,7 @@ obtain them from the upstream repository and comply with the upstream license te
 
 ## How this repository relates to the upstream benchmark
 
-- Parameters in `data/derived/` are reformatted, aggregated, and simplified subsets
+- Parameters in `data/` are reformatted, aggregated, and simplified subsets
   created solely for reproducing the tables and figures of the associated manuscript.
 - No confidential industrial data are included or implied.
 - The derived parameters do not substitute for or replace the upstream benchmark.

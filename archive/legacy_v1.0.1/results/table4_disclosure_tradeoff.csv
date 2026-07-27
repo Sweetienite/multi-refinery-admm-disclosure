@@ -1,4 +1,0 @@
-mechanism,role,admm_profit_cny,utility_retention,exposure_score,exposure_reduction_pct,note
-none,distributed baseline,60288563.64,1.0000,0.930,0.00,Full trajectory visible
-ts_ladder,main evaluation mechanism,60287363.82,0.9997,0.285,69.35,Utility loss < 0.03%
-bucketing,main evaluation mechanism,60278985.47,0.9976,0.273,70.65,Utility loss < 0.24%

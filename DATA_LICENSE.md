@@ -2,12 +2,12 @@
 
 ## Source code
 
-The source code in this repository (`src/`, `scripts/`) is released under the
+The portable scripts in this repository (`scripts/`) are released under the
 **MIT License** (see `LICENSE`).
 
 ## Derived data
 
-The derived parameters in `data/derived/` and pre-computed result tables in `results/`
+The derived parameters in `data/` and pre-computed result tables in `data/`
 are provided solely for **non-commercial academic reproducibility** of the associated
 manuscript. They are not intended to replace, relicense, or redistribute the original
 upstream benchmark.

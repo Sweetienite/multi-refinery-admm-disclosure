@@ -1,6 +1,6 @@
 # ADMM多炼油厂计划协同优化与商业信息披露控制
 
-这是论文读者使用的最终复现材料。当前 release 由封闭仓库 `paper-final-20260727` 导出，包含权威 CSV、8 张最终分图、便携出图脚本和验证脚本；私有 raw trace、内部审计材料和编辑稿不在公开仓库中。
+这是论文读者使用的最终复现材料。当前 release 由封闭仓库 `paper-final-20260727` 导出，包含权威 CSV、8 张最终分图、便携出图脚本和验证脚本；私有 raw trace、内部审计材料、编辑稿和历史归档不在当前公开分支中。
 
 ## 当前权威结果
 
@@ -23,10 +23,11 @@
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python scripts/generate_paper_figures.py --data-dir data --output-dir figures/named
+python scripts/generate_paper_figures.py --data-dir data --output-dir figures/named \
+  --verification-path docs/figure_verification.json
 python scripts/verify_release.py
 ```
 
-出图脚本只读取 `data/` 下的 CSV，路径可通过命令行参数指定；不会从脚本内的另一套常量生成结果。公开仓库只展示论文 release，不提供封闭仓库的 raw/private trace。
+出图脚本只读取 `data/` 下的 CSV，数据目录、输出目录和验证摘要路径均可通过命令行参数指定；不会从脚本内的另一套常量生成结果。公开仓库只展示论文 release，不提供封闭仓库的 raw/private trace。
 
-旧版提交材料仍可在 `archive/legacy_public_20260717/` 中追溯，但不得与当前 `data/`、`figures/` 或 README 混用。
+旧版提交材料仍保留在 Git 历史和旧 tag 中，但不作为当前公开工作树的一部分；当前分支只有论文读者需要的材料。

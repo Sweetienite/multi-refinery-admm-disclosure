@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 
+ROOT = Path(__file__).resolve().parents[1]
 DPI = 600
 BLUE = "#2F6FB3"
 ORANGE = "#E67E22"
@@ -114,7 +115,7 @@ def require_columns(df: pd.DataFrame, required: set[str], source: Path) -> None:
         raise ValueError(f"{source} missing columns: {sorted(missing)}")
 
 
-def build_all(data_dir: Path, output_dir: Path) -> dict:
+def build_all(data_dir: Path, output_dir: Path, verification_path: Path | None = None) -> dict:
     configure_matplotlib()
 
     fig1a = pd.read_csv(data_dir / "final_fig1a_system_value_gain.csv")
@@ -251,7 +252,7 @@ def build_all(data_dir: Path, output_dir: Path) -> dict:
         "final_z_B": float(z_b[-1]),
         "zero_handling": "Source zeros retained; zero dual residuals are converted to NaN only in the plotting array to create line breaks."
     }
-    verification_path = output_dir.parent.parent / "docs" / "figure_verification.json"
+    verification_path = verification_path or ROOT / "docs" / "figure_verification.json"
     verification_path.parent.mkdir(parents=True, exist_ok=True)
     verification_path.write_text(json.dumps(verification,ensure_ascii=False,indent=2),encoding="utf-8")
     return verification
@@ -261,8 +262,14 @@ def main() -> int:
     parser=argparse.ArgumentParser()
     parser.add_argument("--data-dir",type=Path,required=True)
     parser.add_argument("--output-dir",type=Path,required=True)
+    parser.add_argument(
+        "--verification-path",
+        type=Path,
+        default=ROOT / "docs" / "figure_verification.json",
+        help="写入图件数据验证摘要的路径；默认为当前仓库 docs/figure_verification.json",
+    )
     args=parser.parse_args()
-    verification=build_all(args.data_dir.resolve(),args.output_dir.resolve())
+    verification=build_all(args.data_dir.resolve(),args.output_dir.resolve(),args.verification_path.resolve())
     print(json.dumps(verification,ensure_ascii=False,indent=2))
     return 0
 

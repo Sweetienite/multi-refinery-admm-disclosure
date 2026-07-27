@@ -1,6 +1,0 @@
-weight_scheme,weight_direct,weight_corridor,weight_temporal,weight_bottleneck,weight_side,exposure_none,exposure_ts_ladder,exposure_bucketing,reduction_ts_ladder_pct,reduction_bucketing_pct
-main,0.25,0.20,0.20,0.20,0.15,0.930,0.285,0.273,69.35,70.65
-uniform,0.20,0.20,0.20,0.20,0.20,0.930,0.334,0.318,64.09,65.81
-direct_heavy,0.40,0.15,0.15,0.15,0.15,0.947,0.250,0.238,73.60,74.87
-trajectory_heavy,0.15,0.15,0.25,0.25,0.20,0.917,0.359,0.343,60.85,62.60
-side_heavy,0.15,0.15,0.15,0.20,0.35,0.942,0.462,0.433,50.96,54.03

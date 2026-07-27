@@ -1,4 +1,0 @@
-mechanism,exposure_score,utility_retention
-未施加披露控制ADMM,0.93,1.0
-自适应阈值阶梯机制,0.285,0.9997
-流分桶机制,0.273,0.9976

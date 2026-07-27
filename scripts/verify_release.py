@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -30,8 +31,29 @@ def read(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def verify_checksums(manifest: Path, base: Path, errors: list[str]) -> None:
+    for line in manifest.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        expected, relative = line.split(maxsplit=1)
+        path = base / relative
+        if not path.exists():
+            errors.append(f"checksum target missing: {path}")
+            continue
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest != expected:
+            errors.append(f"checksum mismatch: {relative}")
+
+
 def main() -> int:
     errors: list[str] = []
+    if (ROOT / "archive").exists():
+        errors.append("legacy archive must not be present in the public current branch")
+
+    verify_checksums(ROOT / "data" / "SHA256SUMS.txt", ROOT / "data", errors)
+    verify_checksums(ROOT / "figures" / "SHA256SUMS.txt", ROOT / "figures" / "named", errors)
+
     for name, dims in EXPECTED_DIMS.items():
         path = ROOT / "figures" / "named" / name
         if not path.exists():
@@ -55,10 +77,39 @@ def main() -> int:
         if not close(float(trace[-1]["dual_residual"]), 3.147125156033326e-08):
             errors.append("final dual residual mismatch")
 
+    allocation = read(ROOT / "data" / "final_fig1b_allocation_changes.csv")
+    positive_delta = sum(max(float(row["delta_kt"]), 0.0) for row in allocation)
+    if not close(positive_delta, 3.78):
+        errors.append("positive configuration increment mismatch")
+
+    mechanism = {row["metric"]: row for row in read(ROOT / "data" / "final_fig3b_mechanism_summary.csv")}
+    if not close(float(mechanism["暴露降低率/%"]["分阶段量化"]), 61.85, tol=1e-6):
+        errors.append("stagewise exposure reduction mismatch")
+    if not close(float(mechanism["暴露降低率/%"]["配置量分桶_均值"]), 49.95, tol=1e-6):
+        errors.append("bucket exposure reduction mismatch")
+    if not close(float(mechanism["协同收益保留率/%"]["分阶段量化"]), 99.987, tol=1e-6):
+        errors.append("stagewise utility retention mismatch")
+    if not close(float(mechanism["协同收益保留率/%"]["配置量分桶_均值"]), 99.964, tol=1e-6):
+        errors.append("bucket utility retention mismatch")
+
     scoring = read(ROOT / "data" / "scoring_closure_final_results.csv")
     required = {"E_exact", "E_stream", "E_temporal", "E_capacity", "E_aggregate", "S_main"}
     if not scoring or not required.issubset(scoring[0]):
         errors.append("five-component scoring columns missing")
+    for label, expected_iterations, expected_mean in (
+        ("stagewise_quantization", [376, 376, 376], 0.38148768174258835),
+        ("allocation_bucket_0p01", [27, 130, 199], 0.5005111515082138),
+    ):
+        rows = [row for row in scoring if row["label"] == label]
+        if len(rows) != 3:
+            errors.append(f"{label} scoring row count mismatch")
+            continue
+        actual_iterations = [int(row["n_iterations"]) for row in rows]
+        if actual_iterations != expected_iterations:
+            errors.append(f"{label} iteration counts mismatch: {actual_iterations}")
+        actual_mean = sum(float(row["S_main"]) for row in rows) / len(rows)
+        if not close(actual_mean, expected_mean, tol=1e-12):
+            errors.append(f"{label} S_main mean mismatch")
     if errors:
         print("FAILED")
         print("\n".join(f" - {error}" for error in errors))
