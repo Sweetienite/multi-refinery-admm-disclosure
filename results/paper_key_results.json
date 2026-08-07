@@ -1,0 +1,40 @@
+{
+  "contract_id": "paper_key_results_20260806",
+  "standalone_total_CNY": 56281770.0,
+  "centralized_total_CNY": 60401700.0,
+  "coordination_value_CNY": 4119930.0,
+  "admm_total_CNY": 60401701.13487248,
+  "admm_iterations": 60,
+  "objective_difference_CNY": 1.13487248,
+  "positive_allocation_increment_kt": 3.78,
+  "s391_increment_kt": 1.84,
+  "s391_increment_share_percent": 48.7,
+  "compensation_interval_CNY": [
+    887820,
+    5007750
+  ],
+  "stagewise": {
+    "iterations": [
+      376,
+      376,
+      376
+    ],
+    "S_exp": 0.38148768174258835,
+    "exposure_reduction_percent": 61.85,
+    "utility_retention_percent": 99.987
+  },
+  "allocation_bucket_0p01": {
+    "iterations": [
+      27,
+      130,
+      199
+    ],
+    "S_exp_mean": 0.5005111515082138,
+    "exposure_reduction_percent": 49.95,
+    "utility_retention_percent_mean": 99.964
+  },
+  "validation": {
+    "strict": "PASS",
+    "reproducibility": "PARTIAL_PASS"
+  }
+}

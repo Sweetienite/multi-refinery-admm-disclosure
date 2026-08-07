@@ -15,7 +15,7 @@ EXPECTED_DIMS = {
     "fig1b_allocation_changes.png": (3413, 1582),
     "fig2a_residual_convergence.png": (1641, 1216),
     "fig2b_capacity_allocation.png": (1641, 1216),
-    "fig3a_indirect_exposure_components.png": (1641, 1228),
+    "fig3a_indirect_exposure_components.png": (2126, 1535),
     "fig3b_exposure_reduction_and_synergy_retention.png": (1641, 1228),
     "fig4a_cap_multiplier_sensitivity.png": (1641, 1216),
     "fig4b_value_difference_sensitivity.png": (1641, 1216),
@@ -91,6 +91,19 @@ def main() -> int:
         errors.append("stagewise utility retention mismatch")
     if not close(float(mechanism["协同收益保留率/%"]["配置量分桶_均值"]), 99.964, tol=1e-6):
         errors.append("bucket utility retention mismatch")
+
+    components = read(ROOT / "data" / "figure_inputs" / "final_fig3a_indirect_exposure_components.csv")
+    expected_components = [
+        (0.4666666666666667, 0.778525641025641),
+        (0.696984126984127, 0.9742812582407958),
+        (0.9917168200828639, 0.9996651443661757),
+    ]
+    if len(components) != 3:
+        errors.append("final Figure 3 component row count mismatch")
+    else:
+        for row, (stage, bucket) in zip(components, expected_components):
+            if not close(float(row["分阶段量化"]), stage, tol=1e-12) or not close(float(row["配置量分桶"]), bucket, tol=1e-12):
+                errors.append("final Figure 3 component values mismatch")
 
     scoring = read(ROOT / "data" / "scoring_closure_final_results.csv")
     required = {"E_exact", "E_stream", "E_temporal", "E_capacity", "E_aggregate", "S_main"}

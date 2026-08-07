@@ -32,7 +32,7 @@ EXPECTED_DIMS = {
     "image48.png": (3413, 1582),
     "image49.png": (1641, 1216),
     "image50.png": (1641, 1216),
-    "image51.png": (1641, 1228),
+    "image51.png": (2126, 1535),
     "image52.png": (1641, 1228),
     "image53.png": (1641, 1216),
     "image54.png": (1641, 1216),
@@ -191,15 +191,19 @@ def build_all(data_dir: Path, output_dir: Path, verification_path: Path | None =
 
     fig3a = pd.read_csv(data_dir / "final_fig3a_indirect_exposure_components.csv")
     require_columns(fig3a, {"component","分阶段量化","配置量分桶"}, data_dir / "final_fig3a_indirect_exposure_components.csv")
-    labels = fig3a["component"].tolist(); stage = fig3a["分阶段量化"].to_numpy(float); bucket = fig3a["配置量分桶"].to_numpy(float)
+    stage = fig3a["分阶段量化"].to_numpy(float)
+    bucket = fig3a["配置量分桶"].to_numpy(float)
     W,H = EXPECTED_DIMS["image51.png"]
-    fig = new_fig(W,H); ax=fig.add_axes([0.34,0.16,0.61,0.77]); base=np.array([2.05,0.95,-0.15]); off=0.17; h=0.28
-    ax.barh(base+off,stage,height=h,color=BLUE,label="分阶段量化"); ax.barh(base-off,bucket,height=h,color=ORANGE,label="配置量分桶")
-    ax.set_yticks(base,labels); ax.set_xlim(0,1.24); ax.set_ylim(-0.55,2.95); ax.set_xticks([0,0.2,0.4,0.6,0.8,1.0])
-    for y0,v in zip(base+off,stage): ax.text(1.20,y0,f"{v:.3f}",ha="right",va="center",fontsize=6.8)
-    for y0,v in zip(base-off,bucket): ax.text(1.20,y0,f"{v:.3f}",ha="right",va="center",fontsize=6.8)
-    ax.legend(loc="upper center",bbox_to_anchor=(0.5,0.99),ncol=2,frameon=False,fontsize=6.5,handlelength=1.4,columnspacing=0.9)
-    style(ax,xlabel="可恢复暴露分量得分",ticksize=6.6)
+    fig = new_fig(W,H); ax=fig.add_axes([0.15,0.18,0.80,0.70])
+    labels = [r"$E_{\mathrm{temporal}}$", r"$E_{\mathrm{capacity}}$", r"$E_{\mathrm{aggregate}}$"]
+    x=np.arange(len(labels)); bar_width=0.24
+    ax.bar(x-bar_width/2,stage,width=bar_width,color=BLUE,label="分阶段量化",edgecolor="none")
+    ax.bar(x+bar_width/2,bucket,width=bar_width,color=ORANGE,label="配置量分桶",edgecolor="none")
+    ax.set_xticks(x,labels); ax.set_ylim(0.0,1.0); ax.set_yticks(np.arange(0.0,1.01,0.2))
+    ax.legend(loc="upper center",bbox_to_anchor=(0.5,1.105),ncol=2,frameon=False,fontsize=5.8,handlelength=1.0,columnspacing=0.9)
+    style(ax,xlabel="加权指标",ylabel="指标得分",ticksize=6.4)
+    ax.tick_params(top=False,right=False)
+    ax.tick_params(axis="x",which="both",length=0)
     save(fig, output_dir, "image51.png")
 
     fig3b = pd.read_csv(data_dir / "final_fig3b_mechanism_summary.csv").set_index("metric")

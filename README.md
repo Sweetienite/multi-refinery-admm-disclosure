@@ -1,37 +1,36 @@
-# ADMM多炼油厂计划协同优化与商业信息披露控制
+# 基于 ADMM 的多炼油厂协同计划优化和信息披露控制
 
-这是论文读者使用的最终复现材料。当前 release 由封闭仓库 `paper-final-20260727` 导出，包含权威 CSV、8 张最终分图、便携出图脚本和验证脚本；私有 raw trace、内部审计材料、编辑稿和历史归档不在当前公开分支中。
+这是当前论文的读者材料包，面向“公开基准参数衍生的双炼厂共享容量验证算例”。它提供最终论文的参数合同、汇总结果、表4/表5、图1—图4数据与图件，以及可运行的公开校验器；不提供企业实际数据、完整私有轨迹、内部 forensic 材料、编辑稿或作者本地路径。
 
-## 与当前论文的对应范围
+## 当前论文结果
 
-当前公开 release 对应论文的表 2—表 5 和图 1—图 4；图 1—图 4 合计包含 8 张最终分图。仓库首页、CSV、图件和验证脚本均以这一当前论文版本为准，不再使用旧稿的表 6、图 5—图 6 或历史结果指标。旧提交和旧 tag 仅用于历史追溯，不属于当前可复现主线。
+- 独立运营与中心化总收益分别为 56,281,770 和 60,401,700 CNY，系统协同价值为 4,119,930 CNY。
+- 欧氏投影 ADMM 在 60 次迭代后得到 60,401,701.13487248 CNY，和中心化参考相差 1.13487248 CNY。
+- 正向配置增量合计为 3.78 kt；其中 s391 增量 1.84 kt，占该配置增量的 48.7%，不代表收益贡献或跨厂实际输送量。
+- 可行补偿区间为 887,820–5,007,750 CNY。
+- 分阶段量化的暴露评分为 0.38148768174258835、协同收益保留率为 99.987%；0.01 kt 配置量分桶的均值分别为 0.5005111515082138 和 99.964%。
 
-## 当前权威结果
+最终图3使用数学下标指标、0–1.0 纵轴、无柱顶数值和无横轴短刻度。其 SHA-256 为 `d947da9c27df65170930874d96856dbe788f8aca2bfd1ea824fb0724c6169cb8`。
 
-- 系统协同价值：4,119,930 元；中心化目标值：60,401,700 元。
-- 欧氏投影 ADMM：60 次达到双残差 `1e-7` 停止条件，目标值与中心化参考相差 1.13487248 元。
-- 正向配置增量合计：3.78 kt。它是相对独立运营基准的配置变化合计，不是企业真实跨厂物理输送总量。
-- A 向 B 的可行支付范围：887,820～5,007,750 元。
-- 分阶段量化：暴露降低率 61.85%，协同收益保留率 99.987%。
-- 0.01 kt 配置量分桶：暴露降低率 49.95%，协同收益保留率 99.964%。
+## 公开材料与校验
 
-暴露分数是给定公开字段、恢复规则和权重下的经验性可观察程度指标，不是差分隐私、密码学安全或形式化隐私保证。仓库不含企业真实生产数据或涉密信息。
-
-## 方法与复现
-
-方法链为：中心化参考 → 非负共享容量集合的欧氏投影 ADMM → 个体理性支付区间 → 分阶段量化/配置量分桶 → 五分量暴露评分。收益保留率统一以中心化协同增量为分母：
-
-`(机制目标值 - 独立运营总收益) / (中心化协同目标值 - 独立运营总收益)`。
+- 参数合同：`configs/paper_public_parameters_20260806.yaml`
+- 关键结果：`results/paper_key_results.json`
+- 表4、表5：`results/table4_authoritative.csv`、`results/table5_weight_sensitivity_authoritative.csv`
+- 最终图3数据、源码和发布图：`data/figure_inputs/`、`figures_final_release/source/`、`figures_final_release/figures/`
+- 完整八张论文图：`data/`、`figures/named/` 与 `scripts/generate_paper_figures.py`
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python scripts/generate_paper_figures.py --data-dir data --output-dir figures/named \
-  --verification-path docs/figure_verification.json
 python scripts/verify_release.py
+python scripts/validate_public_release.py
+python tools/verify_public_export.py --root . --strict --report public_export_scan.json
 ```
 
-出图脚本只读取 `data/` 下的 CSV，数据目录、输出目录和验证摘要路径均可通过命令行参数指定；不会从脚本内的另一套常量生成结果。公开仓库只展示论文 release，不提供封闭仓库的 raw/private trace。
+## 解释和复现边界
 
-旧版提交材料仍保留在 Git 历史和旧 tag 中，但不作为当前公开工作树的一部分；当前分支只有论文读者需要的材料。
+公开实现可核验中心化参考、欧氏投影 ADMM 结果摘要、图表数据、评分定义和公开参数；它不能复现封闭权威仓库中的 raw/private trace 或内部数值运行时轨迹。严格验证为 `PASS`，总体复现审计为 `PARTIAL_PASS`：分阶段量化和 0.01 kt 分桶分别依赖锁定的 macOS arm64 与 Linux x86_64 数值运行时，不能据此宣称任意平台 bit-level 一致。
+
+暴露评分是既定公开字段、恢复规则和权重下的经验性可观察程度指标，不是差分隐私、密码学安全或泄露概率保证。模型收益基于公开单位经济价值系数，不是企业实际财务利润。方法、数据和结果定义详见 `docs/`。
