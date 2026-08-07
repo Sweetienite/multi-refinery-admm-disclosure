@@ -1,0 +1,3 @@
+mechanism,rho,iterations_min,iterations_max,objective_CNY_mean,coordination_benefit_retention_pct_mean,observable_exposure_score_mean,exposure_reduction_pct_mean
+分阶段量化,1.0,376,376,60401181.443218805,99.98741345651048,0.38148768174258835,61.85123182574117
+配置量分桶,10.0,27,199,60400230.30631117,99.96432721699557,0.5005111515082138,49.94888484917862

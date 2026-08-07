@@ -1,0 +1,83 @@
+contract_id: paper_repository_alignment_20260806
+status: final_handoff
+paper:
+  title_zh: 基于ADMM的多炼油厂协同计划优化和信息披露控制
+  public_repository: https://github.com/Sweetienite/multi-refinery-admm-disclosure
+case:
+  shared_capacity_kt: 8.15
+  collaborative_upper_bound_multiplier: 2.0
+  streams: [s147, s158, s53, s61, s545, s36, s391, s455, s376, s65]
+  positive_allocation_increment_kt: 3.78
+  s391_increment_kt: 1.84
+  s391_increment_share_percent: 48.7
+results:
+  standalone_A_CNY: 22729950
+  standalone_B_CNY: 33551820
+  standalone_total_CNY: 56281770
+  centralized_total_CNY: 60401700
+  coordination_value_CNY: 4119930
+  admm_total_CNY: 60401701.13487248
+  admm_iterations: 60
+  objective_difference_CNY: 1.13487248
+  compensation_interval_CNY: [887820, 5007750]
+admm_main:
+  projection: euclidean_nonnegative_shared_capacity
+  rho: 0.1
+  max_iterations: 10000
+  primal_tolerance: 1.0e-7
+  dual_tolerance: 1.0e-7
+  value_scaling: 1.0e6
+disclosure_scan:
+  seeds: [20260511, 20260512, 20260513]
+  rho_values: [0.1, 1, 10, 100, 1000]
+  total_runs: 60
+  max_iterations: 500
+  primal_tolerance: 1.0e-3
+  dual_tolerance: 1.0e-3
+mechanisms:
+  stagewise_quantization:
+    rho: 1
+    widths_kt:
+      - {iterations: '1-50', width: 0.75}
+      - {iterations: '51-150', width: 0.375}
+      - {iterations: '151+', width: 0.125}
+    authoritative_iterations: [376, 376, 376]
+    utility_retention_percent: 99.987
+    S_exp: 0.38148768174258835
+    exposure_reduction_percent: 61.85
+    locked_runtime: {system: macOS, machine: arm64, python: 3.13.5, numpy: 2.2.6, scipy: 1.16.2}
+  allocation_bucket_boundary:
+    width_kt: 0.25
+  allocation_bucket_main:
+    rho: 10
+    width_kt: 0.01
+    representative: bin_midpoint
+    authoritative_iterations: [27, 130, 199]
+    utility_retention_percent_mean: 99.964
+    S_exp_mean: 0.5005111515082138
+    exposure_reduction_percent: 49.95
+    locked_runtime: {system: Linux, machine: x86_64, python: 3.13.5, numpy: 2.3.5, scipy: 1.17.0, openblas_core: SkylakeX}
+  four_level_interval_state:
+    intervals_percent: [[0,25],[25,50],[50,75],[75,100]]
+    representative: interval_midpoint
+    state_threshold_percent_of_local_upper_sum: 10
+scoring:
+  components: [E_exact, E_stream, E_temporal, E_capacity, E_aggregate]
+  main_weights: {E_exact: 0.25, E_stream: 0.20, E_temporal: 0.20, E_capacity: 0.20, E_aggregate: 0.15}
+  alternative_weights:
+    uniform: {E_exact: 0.20, E_stream: 0.20, E_temporal: 0.20, E_capacity: 0.20, E_aggregate: 0.20}
+    exact_direct: {E_exact: 0.40, E_stream: 0.15, E_temporal: 0.15, E_capacity: 0.15, E_aggregate: 0.15}
+    trajectory: {E_exact: 0.15, E_stream: 0.15, E_temporal: 0.25, E_capacity: 0.25, E_aggregate: 0.20}
+    aggregate_reconstruction: {E_exact: 0.15, E_stream: 0.15, E_temporal: 0.15, E_capacity: 0.20, E_aggregate: 0.35}
+  hotspot_share_values: [0.10, 0.20, 0.30]
+  capacity_pressure_tolerance_kt: [0, 0.0001, 0.001, 0.01]
+  figure3_values:
+    stagewise: {E_temporal: 0.4666666666666667, E_capacity: 0.696984126984127, E_aggregate: 0.9917168200828639}
+    bucket: {E_temporal: 0.778525641025641, E_capacity: 0.9742812582407958, E_aggregate: 0.9996651443661757}
+sensitivity:
+  collaborative_upper_bound_multiplier: [1.6, 1.8, 2.0, 2.2, 2.4]
+  economic_value_difference_factor: [0.8, 0.9, 1.0, 1.1, 1.2]
+reproducibility:
+  overall_status: PARTIAL_PASS
+  strict_validation: PASS
+  forbidden_claim: arbitrary_platform_bit_level_trajectory_equivalence
