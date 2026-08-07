@@ -14,4 +14,6 @@ jobs:
           python-version: "3.11"
       - run: pip install -r requirements.txt
       - run: python scripts/verify_release.py
-      - run: python scripts/generate_paper_figures.py --data-dir data --output-dir figures/named
+      - run: python scripts/validate_public_release.py
+      - run: python tools/verify_public_export.py --root . --strict --report public_export_scan.json
+      - run: python scripts/generate_paper_figures.py --data-dir data --output-dir /tmp/paper-figures
