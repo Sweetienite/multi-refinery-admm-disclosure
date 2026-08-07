@@ -1,6 +1,6 @@
 # 基于 ADMM 的多炼油厂协同计划优化和信息披露控制
 
-这是当前论文的读者材料包，面向“公开基准参数衍生的双炼厂共享容量验证算例”。它提供最终论文的参数合同、汇总结果、表4/表5、图1—图4数据与图件，以及可运行的公开校验器；不提供企业实际数据、完整私有轨迹、内部 forensic 材料、编辑稿或作者本地路径。
+这是当前论文的读者材料包，面向“公开基准参数衍生的双炼厂共享容量验证算例”。它提供最终论文的参数合同、汇总结果、表4/表5、终稿实际采用的 6 个图面板，以及可运行的公开校验器；不提供企业实际数据、完整私有轨迹、内部 forensic 材料、编辑稿或作者本地路径。
 
 ## 当前论文结果
 
@@ -10,15 +10,18 @@
 - 可行补偿区间为 887,820–5,007,750 CNY。
 - 分阶段量化的暴露评分为 0.38148768174258835、协同收益保留率为 99.987%；0.01 kt 配置量分桶的均值分别为 0.5005111515082138 和 99.964%。
 
-最终图3使用数学下标指标、0–1.0 纵轴、无柱顶数值和无横轴短刻度。其 SHA-256 为 `d947da9c27df65170930874d96856dbe788f8aca2bfd1ea824fb0724c6169cb8`。
+## 终稿图件（唯一正文范围）
+
+`manuscript_figures_20260731/` 是经过 SHA-256 锁定的终稿图件包：图1、图2(a/b)、图3、图4(a/b)，共 6 个面板。`docs/MANUSCRIPT_ASSET_CONTRACT_20260807.md` 记录它们与终稿 Word 媒体的逐项对应关系。
+
+此前的“图1(a) 系统价值增益”和“图3(b) 机制摘要”仍保留在 `supplementary_pre_20260731/`（以及对应的根 `data/` CSV）作为公开补充/历史材料，**不属于最终 Word 稿正文**，不得再描述为“八张论文图”或作为正文图号引用。2026-08-06 的旧图3发布件保留在 `supplementary_pre_20260806/`。
 
 ## 公开材料与校验
 
 - 参数合同：`configs/paper_public_parameters_20260806.yaml`
 - 关键结果：`results/paper_key_results.json`
 - 表4、表5：`results/table4_authoritative.csv`、`results/table5_weight_sensitivity_authoritative.csv`
-- 最终图3数据、源码和发布图：`data/figure_inputs/`、`figures_final_release/source/`、`figures_final_release/figures/`
-- 完整八张论文图：`data/`、`figures/named/` 与 `scripts/generate_paper_figures.py`
+- 终稿图片、输入数据、原始生成脚本和上游清单：`manuscript_figures_20260731/`
 
 ```bash
 python -m venv .venv
@@ -28,6 +31,8 @@ python scripts/verify_release.py
 python scripts/validate_public_release.py
 python tools/verify_public_export.py --root . --strict --report public_export_scan.json
 ```
+
+生成脚本需要兼容的中文宋体/宋体风格字体才能逐像素复现已审定 PNG；无该字体环境时，不应覆盖 `manuscript_figures_20260731/figures/` 或将临时渲染结果认作定稿。
 
 ## 解释和复现边界
 

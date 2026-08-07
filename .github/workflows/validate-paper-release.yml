@@ -16,4 +16,4 @@ jobs:
       - run: python scripts/verify_release.py
       - run: python scripts/validate_public_release.py
       - run: python tools/verify_public_export.py --root . --strict --report public_export_scan.json
-      - run: python scripts/generate_paper_figures.py --data-dir data --output-dir /tmp/paper-figures
+      - run: python manuscript_figures_20260731/code/verify_outputs.py

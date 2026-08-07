@@ -12,3 +12,5 @@
 | `final_fig4b_value_difference_sensitivity.csv` | 价值差异系数敏感性 |
 
 金额单位为 CNY，配置量和共享容量单位为 kt。空值表示该字段不适用于该行，不应解释为零。
+
+最终 Word 稿的正文图件输入以 `manuscript_figures_20260731/data/` 为准。根目录 `data/` 中的 `final_fig1a_system_value_gain.csv` 和 `final_fig3b_mechanism_summary.csv` 是保留的补充/历史结果数据，不对应当前正文图面板。
